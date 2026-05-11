@@ -1,6 +1,5 @@
 workspace:
   id: 5b18a086-833b-4346-af5f-95a1eb672e4c
-  name: wday-demo
 collections:
   - name: worker-demo
     path: ./postman/collections/worker-demo
@@ -10,3 +9,17 @@ specs:
 environments:
   - name: worker-demo-env
     path: ./postman/environments/worker-demo-env
+localResources:
+  specs:
+    - ../index.yaml
+  collections:
+    - ../postman/collections/worker-demo
+  environments:
+    - ../postman/environments/worker-demo-env.environment.yaml
+cloudResources:
+  collections:
+    ../postman/collections/worker-demo: 52509354-d6cd65db-36ba-448b-9f89-a2154462cdfb
+  environments:
+    ../postman/environments/worker-demo-env.environment.yaml: 52509354-ea9fbd53-5aca-4520-91e3-b3c564d698bb
+  specs:
+    ../index.yaml: 89f8ac80-f66c-418c-9d8d-80ce965fe5c9

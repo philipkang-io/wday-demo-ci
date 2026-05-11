@@ -1,0 +1,67 @@
+$kind: http-request
+url: "{{mockBaseUrl}}/workers/:workerId/checkInTopics"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+pathVariables:
+  workerId: ""
+body:
+  type: json
+  content: |-
+    {
+      "name": "Demo Check-In Topic from Postman CI"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      // Set the :workerId path variable from the collection variable chained from Request 1
+      const workerId = pm.collectionVariables.get('firstWorkerId');
+      if (workerId) {
+          pm.request.url.variables.upsert({ key: 'workerId', value: workerId, type: 'string' });
+          console.log('Using workerId path param:', workerId);
+      } else {
+          console.warn('firstWorkerId collection variable is empty — run Request 1 first to populate it');
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      // 1. Status — server accepted the create
+      pm.test('Status code is 201 Created', function () {
+          pm.response.to.have.status(201);
+      });
+
+      // 2. Round-trip integrity — server persisted exactly what we sent
+      pm.test('Round-trip — response.name equals request body name', function () {
+          const sent = JSON.parse(pm.request.body.raw || '{}');
+          const received = pm.response.json();
+          pm.expect(received.name).to.eql(sent.name);
+      });
+
+      // 3. Server-assigned identity — id is in Workday WID format (32 lowercase hex chars)
+      pm.test('Server-assigned id is in Workday WID format (32 hex chars)', function () {
+          const json = pm.response.json();
+          pm.expect(json.id, 'id present').to.be.a('string');
+          pm.expect(
+              json.id,
+              `id "${json.id}" should be 32 hex characters (Workday WID format)`
+          ).to.match(/^[0-9a-f]{32}$/);
+      });
+
+      // 4. Contract — response conforms to checkInTopicDetail schema from staffing v6 spec
+      pm.test('Response conforms to checkInTopicDetail schema', function () {
+          const checkInTopicSchema = {
+              type: 'object',
+              required: ['id', 'name'],
+              properties: {
+                  id: { type: 'string' },
+                  name: { type: 'string' },
+                  descriptor: { type: 'string' },
+                  href: { type: 'string' }
+              }
+          };
+          pm.response.to.have.jsonSchema(checkInTopicSchema);
+      });
+    language: text/javascript
+examples: ./.resources/2. POST create check-in topic for first worker (mock).resources/examples
+order: 2000

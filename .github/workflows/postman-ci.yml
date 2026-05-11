@@ -12,6 +12,11 @@ jobs:
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+      - name: Lint Workday Staffing v6 spec
+        run: |
+            postman spec lint --report-events \
+              --workspace-id "5b18a086-833b-4346-af5f-95a1eb672e4c" \
+              --fail-severity error  
       - name: Run API tests
         run: |
           postman collection run "52509354-d6cd65db-36ba-448b-9f89-a2154462cdfb" -e "52509354-ea9fbd53-5aca-4520-91e3-b3c564d698bb"  --report-events

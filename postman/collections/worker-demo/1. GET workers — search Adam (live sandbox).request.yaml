@@ -1,0 +1,83 @@
+$kind: http-request
+url: "{{liveBaseUrl}}/workers?search=Adam"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  search: Adam
+scripts:
+  - type: afterResponse
+    code: |-
+      // 1. Status — request succeeded
+      pm.test('Status code is 200', function () {
+          pm.response.to.have.status(200);
+      });
+
+      // 2. Structural — every worker carries the fields downstream code expects
+      pm.test('Each worker has required properties', function () {
+          const jsonData = pm.response.json();
+          jsonData.data.forEach(function (worker) {
+              pm.expect(worker).to.have.property('id');
+              pm.expect(worker).to.have.property('descriptor');
+              pm.expect(worker).to.have.property('workerId');
+              pm.expect(worker).to.have.property('workerType');
+          });
+      });
+
+      // 3. Contract — response conforms to OpenAPI schema; catches type/shape drift
+      pm.test('Response conforms to OpenAPI schema for /workers', function () {
+          const workersResponseSchema = {
+              type: 'object',
+              required: ['total', 'data'],
+              properties: {
+                  total: { type: 'number' },
+                  data: {
+                      type: 'array',
+                      items: {
+                          type: 'object',
+                          required: ['id', 'descriptor', 'workerId', 'workerType'],
+                          properties: {
+                              id: { type: 'string' },
+                              descriptor: { type: 'string' },
+                              workerId: { type: 'string' },
+                              workerType: {
+                                  type: 'object',
+                                  required: ['id', 'descriptor'],
+                                  properties: {
+                                      id: { type: 'string' },
+                                      descriptor: { type: 'string' }
+                                  }
+                              },
+                              href: { type: 'string' }
+                          }
+                      }
+                  }
+              }
+          };
+          pm.response.to.have.jsonSchema(workersResponseSchema);
+      });
+
+      // 4. Behavior — if a search term was passed, every result must actually match it
+      pm.test('Search filter actually filtered — every worker matches search term', function () {
+          const url = pm.request.url.toString();
+          const searchMatch = url.match(/[?&]search=([^&]+)/);
+          if (!searchMatch) return;
+          const searchTerm = decodeURIComponent(searchMatch[1]).toLowerCase();
+          const jsonData = pm.response.json();
+          jsonData.data.forEach(function (worker) {
+              const descriptor = (worker.descriptor || '').toLowerCase();
+              pm.expect(
+                  descriptor,
+                  `Worker ${worker.id} ('${worker.descriptor}') doesn't match search '${searchTerm}'`
+              ).to.include(searchTerm);
+          });
+      });
+
+      // Chain — save first worker's id for Request 2
+      const data = pm.response.json();
+      if (data && data.data && data.data.length > 0) {
+          pm.collectionVariables.set('firstWorkerId', data.data[0].id);
+          console.log('Saved firstWorkerId =', data.data[0].id, '(' + data.data[0].descriptor + ')');
+      }
+    language: text/javascript
+order: 1000

@@ -1,0 +1,19 @@
+$kind: collection
+description: |-
+  Workday staffing v6 — May 15 deep dive demo collection for Alex Wang + John Yates.
+
+  2 requests, 4 tests each:
+  - GET /workers?search=Adam — live Workday sandbox
+  - POST /workers/{id}/checkInTopics — Postman mock (token doesn't have write scope)
+
+  The tests prove the AI is reasoning about the API: contract conformance (Test 3) + behavior validation (Test 4 GET / round-trip Test 2 POST / WID format Test 3 POST).
+variables:
+  liveBaseUrl: https://restapi-sandboxgmspreviewhotpatch.workdaysuv.com/api/staffing/v6/gms
+  mockBaseUrl: https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io
+  firstWorkerId: ""
+auth:
+  - id: a9934979-a72b-4d64-b3ff-f3ad81435cb5
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{wd_bearer_token}}"
