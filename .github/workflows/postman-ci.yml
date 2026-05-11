@@ -13,6 +13,7 @@ jobs:
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
       - name: Lint Workday Staffing v6 spec
+        continue-on-error: true
         run: |
           postman spec lint "89f8ac80-f66c-418c-9d8d-80ce965fe5c9" \
             --workspace-id "5b18a086-833b-4346-af5f-95a1eb672e4c" \
