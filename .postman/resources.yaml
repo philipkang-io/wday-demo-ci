@@ -1,0 +1,12 @@
+workspace:
+  id: 5b18a086-833b-4346-af5f-95a1eb672e4c
+  name: wday-demo
+collections:
+  - name: worker-demo
+    path: ./postman/collections/worker-demo
+specs:
+  - name: Workday Staffing v6
+    path: ./index.yaml
+environments:
+  - name: worker-demo-env
+    path: ./postman/environments/worker-demo-env

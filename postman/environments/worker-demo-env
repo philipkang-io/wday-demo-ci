@@ -1,0 +1,25 @@
+{
+  "id": "ea9fbd53-5aca-4520-91e3-b3c564d698bb",
+  "name": "worker-demo-env",
+  "values": [
+    {
+      "key": "liveBaseUrl",
+      "value": "https://restapi-sandboxgmspreviewhotpatch.workdaysuv.com/api/staffing/v6/gms",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "mockBaseUrl",
+      "value": "https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "wd_bearer_token",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

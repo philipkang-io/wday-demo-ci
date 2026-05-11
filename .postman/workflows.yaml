@@ -1,0 +1,6 @@
+workflows:
+  syncSpecToCollection:
+    - spec: ../index.yaml
+      collection: ../postman/collections/worker-demo
+      options:
+        syncExamples: false
