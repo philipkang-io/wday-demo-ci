@@ -1,15 +1,18 @@
 $kind: http-request
-name: 1. GET workers — using workday-test-helpers package
+name: 1. GET workers — using workday-test-helpers-package
 url: "{{liveBaseUrl}}/workers?search=Adam"
 method: GET
 headers:
-  Accept: application/json
+  - key: Accept
+    value: application/json
 queryParams:
-  search: Adam
+  - key: search
+    value: Adam
 scripts:
   - type: afterResponse
-    code: |-
-      const { assertWorkerSchema, assertSearchBehavior, assertWorkerRequiredProperties } =
+    code: >-
+      const { assertWorkerSchema, assertSearchBehavior,
+      assertWorkerRequiredProperties } =
         pm.require('@philip-kang-v12-160978/workday-test-helpers');
 
         pm.test('Status code is 200', function () {
