@@ -1,20 +1,12 @@
-owner: "52509354"
-team: "13665508"
-lastUpdatedBy: "52509354"
-lastRevision: 1778536687000
 name: worker-demo-env
-color: null
 values:
   - key: liveBaseUrl
-    value: https://restapi-sandboxgmspreviewhotpatch.workdaysuv.com/api/staffing/v6/gms
-    enabled: true
+    value: 'https://restapi-sandboxgmspreviewhotpatch.workdaysuv.com/api/staffing/v6/gms'
     description: Workday GMS sandbox base URL for live REST calls
   - key: mockBaseUrl
-    value: https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io
-    enabled: true
+    value: 'https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io'
     description: Postman mock server for write operations (worker-demo mock)
   - key: wd_bearer_token
-    enabled: true
     description: Workday sandbox Bearer token — refresh morning of demo (tokens are short-lived)
     secret: true
     source:
@@ -23,5 +15,4 @@ values:
         type: cloud
         secretId: 43c2e1fe-411f-46d6-b996-c1e2cd081d1d
         vaultId: d2686cdc-d6d3-43b9-98b1-cd05d816e3bf
-createdAt: 2026-05-11T21:58:07.000Z
-updatedAt: 2026-05-11T21:58:07.000Z
+color: 0
