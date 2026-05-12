@@ -35,7 +35,7 @@ scripts:
                       type: 'array',
                       items: {
                           type: 'object',
-                          required: ['id', 'descriptor', 'workerId', 'workerType'],
+                          required: ['id', 'descriptor', 'workerId', 'workerType', 'phoneNumber'],
                           properties: {
                               id: { type: 'string' },
                               descriptor: { type: 'string' },
