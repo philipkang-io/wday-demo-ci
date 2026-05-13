@@ -1,4 +1,5 @@
 $kind: collection
+name: worker-demo
 description: |-
   Workday staffing v6 — May 15 deep dive demo collection for Alex Wang + John Yates.
 
@@ -12,8 +13,6 @@ variables:
   mockBaseUrl: https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io
   firstWorkerId: ""
 auth:
-  - id: a9934979-a72b-4d64-b3ff-f3ad81435cb5
-    type: bearer
-    name: bearer auth
-    credentials:
-      token: "{{wd_bearer_token}}"
+  type: bearer
+  credentials:
+    token: "{{vault:wd_bearer_token}}"
