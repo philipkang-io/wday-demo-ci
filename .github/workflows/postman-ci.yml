@@ -18,24 +18,16 @@ jobs:
           postman spec lint "89f8ac80-f66c-418c-9d8d-80ce965fe5c9" \
             --workspace-id "5b18a086-833b-4346-af5f-95a1eb672e4c" \
             --fail-severity error --output json --report-events
-      - name: DEBUG — verify token reaches CI
-        env:
-          WORKDAY_BEARER_TOKEN: ${{ secrets.WORKDAY_BEARER_TOKEN }}
-        run: |
-          echo "Token length: ${#WORKDAY_BEARER_TOKEN}"
-          echo "Token first 3 chars: ${WORKDAY_BEARER_TOKEN:0:3}"
-          curl -s -o /dev/null -w "Direct curl from CI: HTTP %{http_code}\n" \
-            -H "Authorization: Bearer ${WORKDAY_BEARER_TOKEN}" \
-            "https://restapi-sandboxgmspreviewhotpatch.workdaysuv.com/api/staffing/v6/gms/workers?search=Adam"
       - name: Run API tests
         env:
           WORKDAY_BEARER_TOKEN: ${{ secrets.WORKDAY_BEARER_TOKEN }}
         run: |
-          # Move the repo env yaml out of the way so the CLI doesn't auto-discover
-          # its vault reference (which API-key auth in CI cannot resolve).
-          mv postman/environments/worker-demo-env.environment.yaml /tmp/wd-env.yaml.bak
+          # Direct curl proves CI auth works; CLI's variable resolution is bypassing
+          # our --env-var override (auto-fetching vault-sourced cloud env value).
+          # Workaround: substitute the token literally into the collection auth
+          # definition before running. No variable resolution needed.
+          sed -i "s|{{wd_bearer_token}}|${WORKDAY_BEARER_TOKEN}|g" postman/collections/worker-demo/.resources/definition.yaml
           postman collection run ./postman/collections/worker-demo/ \
-            --env-var "wd_bearer_token=${WORKDAY_BEARER_TOKEN}" \
             --env-var "liveBaseUrl=https://restapi-sandboxgmspreviewhotpatch.workdaysuv.com/api/staffing/v6/gms" \
             --env-var "mockBaseUrl=https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io" \
             --report-events
