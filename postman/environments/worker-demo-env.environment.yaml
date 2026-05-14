@@ -7,12 +7,13 @@ values:
     value: 'https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io'
     description: Postman mock server for write operations (worker-demo mock)
   - key: wd_bearer_token
+    disabled: true
     description: Workday sandbox Bearer token — refresh morning of demo (tokens are short-lived)
     secret: true
     source:
       provider: postman
       postman:
         type: cloud
-        secretId: 43c2e1fe-411f-46d6-b996-c1e2cd081d1d
+        secretId: 199f0bc0-a18e-4b16-ab24-f73d523832d8
         vaultId: d2686cdc-d6d3-43b9-98b1-cd05d816e3bf
-color: 0
+color: 120
