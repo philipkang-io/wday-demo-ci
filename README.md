@@ -29,6 +29,3 @@ No Rest Assured re-implementation required. The rewrite step disappears for net-
 The Bearer token for the live Workday sandbox is stored in `worker-demo-env` as a `secret`-type environment variable. It expires daily — refresh from the Workday community site before each demo run, then update the env variable in Postman.
 
 
-
-
-
