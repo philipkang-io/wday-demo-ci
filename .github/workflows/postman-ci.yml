@@ -22,14 +22,14 @@ jobs:
         env:
           WORKDAY_BEARER_TOKEN: ${{ secrets.WORKDAY_BEARER_TOKEN }}
         run: |
-          cat > /tmp/ci-env.json <<EOF
-          {
-            "name": "ci-env",
-            "values": [
-              {"key": "wd_bearer_token", "value": "${WORKDAY_BEARER_TOKEN}", "enabled": true, "type": "secret"},
-              {"key": "liveBaseUrl", "value": "https://restapi-sandboxgmspreviewhotpatch.workdaysuv.com/api/staffing/v6/gms", "enabled": true, "type": "default"},
-              {"key": "mockBaseUrl", "value": "https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io", "enabled": true, "type": "default"}
-            ]
-          }
-          EOF
-          postman collection run ./postman/collections/worker-demo/ -e /tmp/ci-env.json --report-events
+          # Substitute the bearer token literally into the collection auth
+          # definition before running. The auth uses {{vault:wd_bearer_token}}
+          # (V12 Vault prefix) which the CLI tries to resolve via Postman Vault;
+          # API-key auth in CI cannot read the vault, so the token resolves to
+          # empty and the request 401s. sed substitution bypasses vault lookup
+          # entirely by baking the literal token into the auth definition.
+          sed -i "s|{{vault:wd_bearer_token}}|${WORKDAY_BEARER_TOKEN}|g" postman/collections/worker-demo/.resources/definition.yaml
+          postman collection run ./postman/collections/worker-demo/ \
+            --env-var "liveBaseUrl=https://restapi-sandboxgmspreviewhotpatch.workdaysuv.com/api/staffing/v6/gms" \
+            --env-var "mockBaseUrl=https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io" \
+            --report-events
