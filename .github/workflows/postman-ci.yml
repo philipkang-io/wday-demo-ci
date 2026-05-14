@@ -26,7 +26,7 @@ jobs:
           # our --env-var override (auto-fetching vault-sourced cloud env value).
           # Workaround: substitute the token literally into the collection auth
           # definition before running. No variable resolution needed.
-          sed -i "s|{{wd_bearer_token}}|${WORKDAY_BEARER_TOKEN}|g" postman/collections/worker-demo/.resources/definition.yaml
+          sed -i "s|{{vault:wd_bearer_token}}|${WORKDAY_BEARER_TOKEN}|g" postman/collections/worker-demo/.resources/definition.yaml
           postman collection run ./postman/collections/worker-demo/ \
             --env-var "liveBaseUrl=https://restapi-sandboxgmspreviewhotpatch.workdaysuv.com/api/staffing/v6/gms" \
             --env-var "mockBaseUrl=https://3777f45c-631f-47a8-8b14-71483fe7e8aa.mock.pstmn.io" \
